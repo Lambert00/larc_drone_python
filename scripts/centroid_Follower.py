@@ -4,7 +4,7 @@ import rospy
 from bebop_msgs.msg import Ardrone3PilotingStateAltitudeChanged
 from geometry_msgs.msg import Twist
 
-class ControlAltitude():
+class FollowCentroids():
     def __init__(self):
         self.velocity_pub = rospy.Publisher('/bebop/cmd_vel', Twist, queue_size=10)
         rospy.Subscriber("/bebop/states/ardrone3/PilotingState/AltitudeChanged", Ardrone3PilotingStateAltitudeChanged, self.alt_callback, queue_size=10)
