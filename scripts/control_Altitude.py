@@ -13,23 +13,15 @@ class ControlAltitude():
         self.land_pub = rospy.Publisher('/bebop/land', Empty, queue_size=10)
         rospy.Subscriber("/bebop/states/ardrone3/PilotingState/AltitudeChanged", Ardrone3PilotingStateAltitudeChanged, self.alt_callback, queue_size=10)
         
-        self.key = None
-        self.goal = 0
-        
-    def take_off(self):
-        # Count para darle tiempo a que llege a su altura takeoff
-        count = 1000
         msg = Empty()
+        self.takeoff_pub.publish(msg)
         
-        while count>0:
-            self.takeoff_pub.publish(msg)
-            count -= 1
+        self.goal = 0
         
     def alt_callback(self, value):
         
-        if cv2.waitKey(1) & 0xFF == ord('t'): self.take_off()
         if cv2.waitKey(1) & 0xFF == ord('g'): self.goal = 1
-        if cv2.waitKey(1) & 0xFF == ord('l'): self.goal = 0.2
+        if cv2.waitKey(1) & 0xFF == ord('l'): self.goal = 0.4
         
         current = value.altitude
         self.control_altitude(current, self.goal)
@@ -44,8 +36,12 @@ class ControlAltitude():
         # Velocidad del dron
         vel_msg.linear.z = Kp*altError
         
-        land_msg = Empty()
-        if goal == 0.2 and abs(vel_msg.linear.z) < 0.1: self.land_pub.publish(land_msg)
+        # si el goal esta a la altura del land y el valor absoluto del error de velocidad es menor que 0.1 manda land
+        if goal == 0.4 and abs(vel_msg.linear.z) < 0.1: 
+            land_msg = Empty()
+            self.land_pub.publish(land_msg)
+
+            
         self.velocity_pub.publish(vel_msg)
         print(current)
         print (vel_msg.linear.z)
