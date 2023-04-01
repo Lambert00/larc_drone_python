@@ -31,7 +31,7 @@ class FollowCentroids():
 
 def main():
     rospy.init_node('bebop_plan', anonymous=True)
-    node = ControlAltitude()
+    node = FollowCentroids()
     rospy.spin()
 
 if __name__ == '__main__':
