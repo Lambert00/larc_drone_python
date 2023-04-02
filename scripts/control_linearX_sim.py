@@ -32,6 +32,7 @@ class ControlLinearX():
         # Stop move
         self.cmd_vel_msg.linear.x = 0
         self.cmd_vel_pub.publish(self.cmd_vel_msg)
+        rospy.sleep(3)
         
         while self.land_pub.get_num_connections()<1:pass
         self.land_pub.publish(self.land_msg)
